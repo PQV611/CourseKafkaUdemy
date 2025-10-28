@@ -22,20 +22,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String createProduct(CreateProductRestModel product) {
+    public String createProduct(CreateProductRestModel product) throws Exception {
         String productId = UUID.randomUUID().toString() ;
         ProductCreateEvent productCreateEvent = new ProductCreateEvent(productId, product.getTitle(), product.getPrice(), product.getQuantity()) ;
 
-        CompletableFuture<SendResult<String, ProductCreateEvent>> future = kafkaTemplate.send("product-created-events-topic", productId, productCreateEvent);
+        logger.info("[START RUN KAFKA]");
 
-        future.whenComplete((result, exception) -> {
-            if (exception != null) {
-                logger.error("Run Kafka failed: " + exception.getMessage());
-            }else {
-                logger.info("Run Kafka completed with productId: "  + result.getRecordMetadata());
-            }
-        }) ;
-
+        SendResult<String, ProductCreateEvent> result = kafkaTemplate.send("topic2", productId, productCreateEvent).get();
+        logger.info("Partition: " + result.getRecordMetadata().partition());
+        logger.info("Topic: " + result.getRecordMetadata().topic());
+        logger.info("Offset: " + result.getRecordMetadata().offset());
+        logger.info("[FINISH RUN KAFKA]");
         return productId ;
     }
 }
