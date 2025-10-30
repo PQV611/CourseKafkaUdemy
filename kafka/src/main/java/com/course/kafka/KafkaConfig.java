@@ -1,6 +1,6 @@
 package com.course.kafka;
 
-import com.course.kafka.service.ProductCreateEvent;
+import com.appsdeveloprblog.ws.core.ProductCreateEvent;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
